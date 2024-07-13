@@ -32,9 +32,23 @@ def save_and_encrypt_notes():
         messagebox.showerror(title="Error!",message="Please enter all info")
     else:
         #encryptiom
+        message_encrypted = encode(master_secret, message)
 
-        with open("mysecret.txt","a") as data_file:
-            data_file.write(f"\n{title}\n{message}")
+        try:
+            with open("mysecret.txt", "a") as data_file:
+                data_file.write(f"\n{title}\n{message_encrypted}")
+
+        except FileNotFoundError:
+            with open("mysecret.txt", "w") as data_file:
+                data_file.write(f"\n{title}\n{message_encrypted}")
+        finally:
+            title_entry.delete(0,END)
+            secret_text.delete("1.0",END)
+            key_entry.delete(0,END)
+
+
+
+
 #window
 window = tkinter.Tk()
 window.title("Secret_note")
