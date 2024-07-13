@@ -46,7 +46,19 @@ def save_and_encrypt_notes():
             secret_text.delete("1.0",END)
             key_entry.delete(0,END)
 
+def decrypt_notes():
+    message_encrypted = secret_text.get("1.0",END)
+    master_secret = key_entry.get()
 
+    if len(message_encrypted) == 0 or len(master_secret) == 0:
+        messagebox.showerror(title="Error!",message="Please enter all info")
+    else:
+        try:
+            decrypted_message = decode(master_secret,message_encrypted)
+            secret_text.delete("1.0",END)
+            secret_text.insert("1.0",decrypted_message)
+        except:
+            messagebox.showerror(title="Error!", message="please enter encrypted text")
 
 
 #window
@@ -126,13 +138,10 @@ encrypt_button.pack(pady=20)
 #save and encrypt
 
 
-#decrypt
-def decrypt_button_fun():
-    pass
 
 decrypt_button = tkinter.Button(
     text="Decrypt",
-    command=decrypt_button_fun(),
+    command=decrypt_notes,
 )
 decrypt_button.pack()
 #decrypt
