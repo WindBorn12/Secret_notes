@@ -1,5 +1,40 @@
 import tkinter
+from tkinter import messagebox
+from tkinter import PhotoImage, END
+import base64
 
+#ecnrypt and decrypt
+def encode(key, clear):
+    enc = []
+    for i in range(len(clear)):
+        key_c = key[i % len(key)]
+        enc_c = chr((ord(clear[i]) + ord(key_c)) % 256)
+        enc.append(enc_c)
+    return base64.urlsafe_b64encode("".join(enc).encode()).decode()
+
+def decode(key, enc):
+    dec = []
+    enc = base64.urlsafe_b64decode(enc).decode()
+    for i in range(len(enc)):
+        key_c = key[i % len(key)]
+        dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
+        dec.append(dec_c)
+    return "".join(dec)
+#ecnrypt and decrypt
+
+
+def save_and_encrypt_notes():
+    title = title_entry.get()
+    message = secret_text.get("1.0", END)
+    master_secret = key_entry.get()
+
+    if len(title) == 0 or len(message) == 0 or len(master_secret) == 0:
+        messagebox.showerror(title="Error!",message="Please enter all info")
+    else:
+        #encryptiom
+
+        with open("mysecret.txt","a") as data_file:
+            data_file.write(f"\n{title}\n{message}")
 #window
 window = tkinter.Tk()
 window.title("Secret_note")
@@ -8,11 +43,19 @@ window.minsize(width=500,height=700)
 
 
 
-#file
-Secret_notes = open("C:/Users/windb/OneDrive/Masaüstü/Python_secret_notes/notes", "w")
+#ui
 
-Secret_notes.close()
-#file
+
+## photo
+photo = PhotoImage(file = "img.png")
+#photo_button = tkinter.Label(image=photo)
+#photo_button.pack()
+
+canvas = tkinter.Canvas(height=200,width=200)
+canvas.create_image(100,100,image=photo)
+canvas.pack()
+## photo
+
 
 
 
@@ -34,11 +77,12 @@ title_entry.pack()
 secret_label = tkinter.Label(
     text="Enter your secret",
     fg="black",
+    width=50,
 )
 secret_label.pack()
 
-text =tkinter.Text(width=30,height=5)
-text.pack()
+secret_text= tkinter.Text(width=30, height=5)
+secret_text.pack()
 #secret
 
 #key
@@ -56,12 +100,13 @@ key_entry.pack()
 
 
 #save and encrypt
-def encrypt_button_fun():
-    pass
+
+
+
 
 encrypt_button = tkinter.Button(
     text="save and encrypt",
-    command=encrypt_button_fun(),
+    command=save_and_encrypt_notes,
 )
 encrypt_button.pack(pady=20)
 #save and encrypt
